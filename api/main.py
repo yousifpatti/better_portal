@@ -10,9 +10,12 @@ import os
 from google.cloud import storage
 from parser import get_json
 from datetime import datetime
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 bucket = "bunny-session"
 
@@ -28,6 +31,8 @@ def make_session_permanent():
 
 def open_session():
     s = requests.Session()
+    s.headers.update({"Access-Control-Allow-Methods":
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE", 'Access-Control-Allow-Origin': '*'})
     res = s.get('https://teamportal.bunnings.com.au/')
     # no update headers here
     return s
@@ -135,7 +140,10 @@ def login_page():
     #     pk.dump(sesh, output_file)
 
     response = jsonify({"Status" : "OK"})
+    response.headers.add("Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE")
     response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
 
     return response
 
@@ -175,7 +183,7 @@ def doMfa():
         next_year = current_year + 1
     else:
         next_year = current_year
-    
+
 
     string_current_month = str(current_month).zfill(2) + '/' + str(current_year)
     string_next_month = str(next_month).zfill(2) + '/' + str(next_year)
@@ -197,7 +205,10 @@ def doMfa():
 
 
     response = jsonify(roster)
+    response.headers.add("Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE")
     response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
 
     return response
 

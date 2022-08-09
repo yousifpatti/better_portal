@@ -29,7 +29,7 @@ void login(mail, password) async {
     "vhost": 'standard'
   };
 
-  String payload2 = "username=424376&password=***REMOVED***&vhost=standard";
+  String payload2 = "username=&password=&vhost=standard";
 
   var dio =  Dio();
   var cookieJar=CookieJar();
@@ -45,7 +45,7 @@ void login(mail, password) async {
   ),);
   print(b.headers);
 
-  // var b = await dio.request("https://teamportal.bunnings.com.au/my.policy?username=424376&password=***REMOVED***&vhost=standard", options: Options(contentType: ContentType.parse("text/plain").toString()));
+  // var b = await dio.request("https://teamportal.bunnings.com.au/my.policy?username=&password=&vhost=standard", options: Options(contentType: ContentType.parse("text/plain").toString()));
   // print(b);
 
 
@@ -73,7 +73,7 @@ void login(mail, password) async {
 
 
   // var s = await Requests.get("https://teamportal.bunnings.com.au/");
-  //String payload = "username=424376&password=***REMOVED***&vhost=standard";
+  //String payload = "username=&password=&vhost=standard";
 
   // print(Requests.extractResponseCookies(s.headers));
   // Requests.setStoredCookies(mail, Requests.extractResponseCookies(s.headers));
@@ -144,7 +144,7 @@ void login(mail, password) async {
 
 // This is where the app starts executing.
 void main() {
-  login("424376", "***REMOVED***");
+  login("", "");
   //var MFA_session = MFA(session);
 
 }

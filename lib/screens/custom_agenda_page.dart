@@ -1,8 +1,16 @@
+import 'dart:convert';
+import 'dart:html' as html;
+import 'dart:io';
+
+import 'package:better_portal/screens/about_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:ical/serializer.dart';
+
+import 'export_page.dart';
 
 class CustomAgenda extends StatefulWidget {
   final Map js;
@@ -14,6 +22,7 @@ class CustomAgenda extends StatefulWidget {
 
 class ScheduleExample extends State<CustomAgenda> {
   List<Appointment> _appointmentDetails = <Appointment>[];
+  // Map<int, Map<int, String>> calendar = new Map();
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +42,41 @@ class ScheduleExample extends State<CustomAgenda> {
               ListTile(
                 title: const Text('Export to Calendar'),
                 onTap: () {
+                  Map<String, ICalendar> calendars = {};
 
+                  widget.js.forEach((key, v1) {
+                    // for each month
+                    var date = key.split(' ');
+                    var month = date[0];
+                    var year = date[1];
+                    calendars[month] = ICalendar();
+                    v1.toList().forEach((item) {
+                      var key2 = item['day'];
+                      var v2 = item['status'];
+                      if (!v2.contains('NOT ROSTERED')) {
+                        calendars[month]?.addElement(IEvent(
+                            start: DateTime.utc(
+                                int.parse(year), getMonthNumber(month), key2),
+                            description: v2,
+                            summary: v2));
+                      }
+                    });
+                  });
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => export_page(
+                                calendars: calendars,
+                              )));
                 },
               ),
               ListTile(
                 title: const Text('About'),
                 onTap: () {
                   // Take me to the about page or whatever
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => about_page()));
                 },
               ),
             ]),
@@ -143,25 +180,31 @@ class ScheduleExample extends State<CustomAgenda> {
     final List<Appointment> appointments = <Appointment>[];
     // Map<String, Map<String, String>> js = getData();
 
-        widget.js.forEach((key, v1) {
-          // for each month
-          var date = key.split(' ');
-          var month = date[0];
-          var year = date[1];
-          v1.toList().forEach((item) {
-            var key2 = item['day'];
-            var v2 = item['status'];
-            if (!v2.contains('NOT ROSTERED')) {
-              appointments.add(Appointment(
-                  startTime: DateTime.utc(int.parse(year), getMonthNumber(month), key2),
-                  endTime: DateTime.utc(int.parse(year), getMonthNumber(month), key2),
-                  subject: v2,
-                  color: Colors.lightGreen,
-                  isAllDay: true));
-            }
-          });
-        });
-
+    widget.js.forEach((key, v1) {
+      // for each month
+      var date = key.split(' ');
+      var month = date[0];
+      var year = date[1];
+      v1.toList().forEach((item) {
+        var key2 = item['day'];
+        var v2 = item['status'];
+        if (!v2.contains('NOT ROSTERED')) {
+          // if (!calendar.containsKey(getMonthNumber(month))) {
+          //   calendar[getMonthNumber(month)] = Map();
+          //   (calendar[getMonthNumber(month)])![key2] = ;
+          // }
+          // calendar[getMonthNumber(month)] = 1;
+          appointments.add(Appointment(
+              startTime:
+                  DateTime.utc(int.parse(year), getMonthNumber(month), key2),
+              endTime:
+                  DateTime.utc(int.parse(year), getMonthNumber(month), key2),
+              subject: v2,
+              color: Colors.lightGreen,
+              isAllDay: true));
+        }
+      });
+    });
 
     return _DataSource(appointments);
   }

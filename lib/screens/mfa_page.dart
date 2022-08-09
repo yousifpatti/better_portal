@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../backend.dart';
 import 'custom_agenda_page.dart';
 
@@ -16,6 +17,7 @@ class mfa_page extends StatefulWidget {
 
 class _mfa_pageState extends State<mfa_page> {
   TextEditingController codeController = TextEditingController();
+  bool isPressed = false;
 
   // String get username => _username;
   // String get password => _password;
@@ -35,13 +37,6 @@ class _mfa_pageState extends State<mfa_page> {
                     color: Colors.blue,
                   ),
                   child: Icon(Icons.all_inclusive_outlined),
-                ),
-                ListTile(
-                  title: const Text('About'),
-                  onTap: () {
-                    // Take me to the about page or whatever
-                    Navigator.pop(context);
-                  },
                 ),
               ]),
         ),
@@ -69,6 +64,7 @@ class _mfa_pageState extends State<mfa_page> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: TextField(
+                    onSubmitted: (value) => {FocusManager.instance.primaryFocus?.unfocus()},
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
@@ -87,18 +83,56 @@ class _mfa_pageState extends State<mfa_page> {
                     height: 50,
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: ElevatedButton(
-                      child: const Text('Verify'),
+                      child: isPressed
+                          ? LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.white,
+                        size: 25,
+                      ): const Text('Verify'),
                       onPressed: () {
-                        MFA(widget.username, widget.password,
-                                codeController.text)
-                            .then((value) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CustomAgenda(
-                                        js: value,
-                                      )));
+                        setState(() {
+                          isPressed = true;
                         });
+                        try {
+                          MFA(widget.username, widget.password,
+                              codeController.text)
+                              .then((value) {
+                            setState(() {
+                              isPressed = false;
+                            });
+                            if (value == {'error': 'error parsing'}) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  content:
+                                  Text("Something went wrong")));
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CustomAgenda(
+                                            js: value,
+                                          )));
+                            }
+                          });
+                        } catch (e) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                              content:
+                              Text("Something went wrong")));
+                        }
+
+                      },
+                    )),
+                Container(
+                  height: 25,
+                ),
+                Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ElevatedButton(
+                      child: const Text('Back'),
+                      onPressed: () {
+                        Navigator.pop(context);
                       },
                     )),
               ],
