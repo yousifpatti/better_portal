@@ -11,6 +11,8 @@ This project demonstrates a concept web application I have been working on that 
 4) Allowing the option to export your shifts to your favourite calendar
 5) Supporting a responsive mobile friendly view
 
+M3 is a cross platform Flutter application that interacts with custom API to retrive user data.
+
 The project uses a custom made Flask API running on Google Cloud Server and using Google Cloud storage to remember user session details.
 
 
