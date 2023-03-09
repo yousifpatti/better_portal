@@ -1,6 +1,6 @@
 # M3 better_portal
 
-A Better Bunnings Portal.
+A Better Unofficial Bunnings Portal.
 
 The login process through R3 takes approximtly 25 seconds and 12 clicks (if using password managers) to view the roster.
 
@@ -21,3 +21,8 @@ https://user-images.githubusercontent.com/70254211/223926431-bb88b28b-c37b-4551-
 
 ## M3 (Better Portal)
 https://user-images.githubusercontent.com/70254211/223923840-6a450e9c-f341-46e6-a665-aeb24369a0d6.mp4
+
+
+### Disclaimer
+Not affiliated with Bunnings
+
