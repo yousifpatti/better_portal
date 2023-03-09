@@ -11,6 +11,8 @@ This project demonstrates a concept web application I have been working on that 
 4) Allowing the option to export your shifts to your favourite calendar
 5) Supporting a responsive mobile friendly view
 
+The project uses a custom made Flask API running on Google Cloud Server and using Google Cloud storage to remember user session details.
+
 
 ## R3 (Bunnings Portal)
 https://user-images.githubusercontent.com/70254211/223926431-bb88b28b-c37b-4551-a159-01049c40a94b.mp4
